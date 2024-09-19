@@ -13,7 +13,8 @@ class GildedRose(object):
         if item.name == "Sulfuras, Hand of Ragnaros":
             return
 
-        expired = item.sell_in < 0
+        expired = item.sell_in <= 0
+
         if item.name == "Aged Brie":
             if not expired:
                 item.quality += 1
@@ -23,38 +24,30 @@ class GildedRose(object):
             ## This will always be executed
             item.sell_in = item.sell_in - 1
             return
-        
-
-        if item.name != "Backstage passes to a TAFKAL80ETC concert":
-            ## Decreasing quality by 1 except brie, concert and sulfuras
-            if item.quality > 0:
-                item.quality = item.quality - 1
+    
+        if item.name == "Backstage passes to a TAFKAL80ETC concert":
+            if expired:
+                item.quality = 0
+                item.sell_in = item.sell_in - 1
+                return
+            if item.sell_in >= 11:
+                item.quality += 1
+            elif item.sell_in >= 6:
+                item.quality += 2
+            elif item.sell_in >= 0:
+                item.quality += 3
+            item.quality = min(item.quality, 50)
+            item.sell_in = item.sell_in - 1
+            return
+    
+        ## Regular item
+        if not expired:
+            item.quality -= 1
         else:
-            ## Either brie or concert
-            if item.quality < 50:
-                item.quality = item.quality + 1
-                if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                    ## concert will potentially enter both if conditions
-                    if item.sell_in < 11:
-                        if item.quality < 50:
-                            item.quality = item.quality + 1
-                    if item.sell_in < 6:
-                        if item.quality < 50:
-                            item.quality = item.quality + 1
-
-
-        ## This will always be executed
+            item.quality -= 2
+        item.quality = max(item.quality, 0)
         item.sell_in = item.sell_in - 1
-        if item.sell_in < 0:
-            ## expired
-            if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                if item.quality > 0:
-                    ## if not brie, concert or sulfuras, decrease quality by 1 more
-                    item.quality = item.quality - 1
-            else:
-                # concert
-                item.quality = item.quality - item.quality ## set quality to 0
-
+        return
 
 class Item:
     def __init__(self, name, sell_in, quality):

@@ -12,8 +12,20 @@ class GildedRose(object):
     def update_quality_for_item(self, item):
         if item.name == "Sulfuras, Hand of Ragnaros":
             return
+
+        expired = item.sell_in < 0
+        if item.name == "Aged Brie":
+            if not expired:
+                item.quality += 1
+            else:
+                item.quality += 2
+            item.quality = min(item.quality, 50)
+            ## This will always be executed
+            item.sell_in = item.sell_in - 1
+            return
         
-        if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
+
+        if item.name != "Backstage passes to a TAFKAL80ETC concert":
             ## Decreasing quality by 1 except brie, concert and sulfuras
             if item.quality > 0:
                 item.quality = item.quality - 1
@@ -35,18 +47,13 @@ class GildedRose(object):
         item.sell_in = item.sell_in - 1
         if item.sell_in < 0:
             ## expired
-            if item.name != "Aged Brie":
-                if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                    if item.quality > 0:
-                        ## if not brie, concert or sulfuras, decrease quality by 1 more
-                        item.quality = item.quality - 1
-                else:
-                    # concert
-                    item.quality = item.quality - item.quality ## set quality to 0
+            if item.name != "Backstage passes to a TAFKAL80ETC concert":
+                if item.quality > 0:
+                    ## if not brie, concert or sulfuras, decrease quality by 1 more
+                    item.quality = item.quality - 1
             else:
-                ## brie
-                if item.quality < 50:
-                    item.quality = item.quality + 1
+                # concert
+                item.quality = item.quality - item.quality ## set quality to 0
 
 
 class Item:

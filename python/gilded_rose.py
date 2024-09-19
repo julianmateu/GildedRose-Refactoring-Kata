@@ -14,40 +14,35 @@ class GildedRose(object):
             return
 
         expired = item.sell_in <= 0
+        remaining_days = item.sell_in
+        item.sell_in = item.sell_in - 1
 
         if item.name == "Aged Brie":
             if not expired:
                 item.quality += 1
             else:
                 item.quality += 2
-            item.quality = min(item.quality, 50)
-            ## This will always be executed
-            item.sell_in = item.sell_in - 1
-            return
     
-        if item.name == "Backstage passes to a TAFKAL80ETC concert":
+        elif item.name == "Backstage passes to a TAFKAL80ETC concert":
             if expired:
                 item.quality = 0
-                item.sell_in = item.sell_in - 1
-                return
-            if item.sell_in >= 11:
-                item.quality += 1
-            elif item.sell_in >= 6:
-                item.quality += 2
-            elif item.sell_in >= 0:
-                item.quality += 3
-            item.quality = min(item.quality, 50)
-            item.sell_in = item.sell_in - 1
-            return
+            else:
+                if remaining_days >= 11:
+                    item.quality += 1
+                elif remaining_days >= 6:
+                    item.quality += 2
+                elif remaining_days >= 0:
+                    item.quality += 3
     
-        ## Regular item
-        if not expired:
-            item.quality -= 1
         else:
-            item.quality -= 2
+            ## Regular item
+            if not expired:
+                item.quality -= 1
+            else:
+                item.quality -= 2
+
+        item.quality = min(item.quality, 50) 
         item.quality = max(item.quality, 0)
-        item.sell_in = item.sell_in - 1
-        return
 
 class Item:
     def __init__(self, name, sell_in, quality):

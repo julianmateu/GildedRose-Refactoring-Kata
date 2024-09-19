@@ -34,12 +34,18 @@ class GildedRose(object):
                 elif remaining_days >= 0:
                     item.quality += 3
     
+        elif item.name.startswith("Conjured"):
+            if not expired:
+                item.quality -= 2
+            else:
+                item.quality -= 4
+                
         else:
             ## Regular item
             if not expired:
-                item.quality -= 1
+                item.quality -= 1 
             else:
-                item.quality -= 2
+                item.quality -= 2 
 
         item.quality = min(item.quality, 50) 
         item.quality = max(item.quality, 0)

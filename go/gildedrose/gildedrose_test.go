@@ -240,6 +240,30 @@ func Test_Foo(t *testing.T) {
 			0,
 			50,
 		},
+		{
+			"Conjured decreases in quality by 2 if not expired",
+			"Conjured Mana Cake",
+			3,
+			6,
+			2,
+			4,
+		},
+		{
+			"Conjured decreases in quality by 4 if expired",
+			"Conjured Mana Cake",
+			0,
+			6,
+			-1,
+			2,
+		},
+		{
+			"Conjured quality does not go below 0",
+			"Conjured Mana Cake",
+			0,
+			0,
+			-1,
+			0,
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {

@@ -1,5 +1,7 @@
 package gildedrose
 
+import "strings"
+
 type Item struct {
 	Name            string
 	SellIn, Quality int
@@ -28,7 +30,7 @@ func (u *AgedBrieUpdater) UpdateQuality(item *Item) {
 type BackstagePassUpdater struct{}
 
 func (u *BackstagePassUpdater) Matches(item *Item) bool {
-	return item.Name == "Backstage passes to a TAFKAL80ETC concert"
+	return strings.HasPrefix(item.Name, "Backstage passes")
 }
 
 func (u *BackstagePassUpdater) UpdateQuality(item *Item) {
@@ -68,10 +70,26 @@ func (u *DefaultUpdater) UpdateQuality(item *Item) {
 	}
 }
 
+type ConjuredUpdater struct{}
+
+func (u *ConjuredUpdater) Matches(item *Item) bool {
+	return strings.HasPrefix(item.Name, "Conjured")
+}
+
+func (u *ConjuredUpdater) UpdateQuality(item *Item) {
+	decreaseSellIn(item)
+	if expired(item) {
+		increaseQuality(item, -4)
+	} else {
+		increaseQuality(item, -2)
+	}
+}
+
 var itemUpdaters = []ItemUpdater{
 	&SulfurasUpdater{},
 	&AgedBrieUpdater{},
 	&BackstagePassUpdater{},
+	&ConjuredUpdater{},
 	&DefaultUpdater{},
 }
 

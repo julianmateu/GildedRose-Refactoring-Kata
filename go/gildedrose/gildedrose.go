@@ -13,11 +13,12 @@ func UpdateQuality(items []*Item) {
 }
 
 func updateQualityForItem(item *Item) {
+	if item.Name == "Sulfuras, Hand of Ragnaros" {
+		return
+	}
 	if item.Name != "Aged Brie" && item.Name != "Backstage passes to a TAFKAL80ETC concert" {
 		if item.Quality > 0 {
-			if item.Name != "Sulfuras, Hand of Ragnaros" {
-				item.Quality = item.Quality - 1
-			}
+			item.Quality = item.Quality - 1
 		}
 	} else {
 		if item.Quality < 50 {
@@ -37,9 +38,7 @@ func updateQualityForItem(item *Item) {
 		}
 	}
 
-	if item.Name != "Sulfuras, Hand of Ragnaros" {
-		item.SellIn = item.SellIn - 1
-	}
+	item.SellIn = item.SellIn - 1
 
 	if item.SellIn < 0 {
 		if item.Name != "Aged Brie" {
